@@ -1,0 +1,322 @@
+M A N N I N G
+ Abhinav Kimothi
+Retrieval Augmented
+Generation
+A SIMPLE GUIDE TOThe indexing and generation pipelines together make a RAG system. The indexing pipeline is an offline 
+process, while the generation pipeline facilitates real-time interaction with the knowledge base.
+User asks a
+question.
+The system searches
+for relevant
+information.
+The information relevant
+to the input question is
+fetched, or retrieved.
+The prompt with the user
+question is augmented
+with the retrieved
+information.
+The LLM responds
+with a contextual
+answer.
+Connect to
+external sources.
+Extract documents and
+parse text from
+documents.
+Break down long 
+pieces of text into
+smaller manageable
+pieces.
+Convert these small
+pieces into a suitable
+format.
+Generation pipeline :
+Uses the knowledge
+base to generate context
+aware responses
+LLM
+Response
+Search
+Retriever
+User
+Question
+{Question + Information}
+Parametric memory
+Storage
+Non-parametric memory
+Source
+Connector
+Extracter &
+parser
+Splitter
+Converter
+Knowledge base
+Indexing pipeline :
+Facilitates the creation
+of the knowledge base
+Fetch
+informationM A N N I N G
+Shelter Island
+Abhinav Kimothi
+A Simple Guide to Retrieval 
+Augmented GenerationFor online information and ordering of this and other Manning books, please visit www.manning.com. 
+The publisher offers discounts on this book when ordered in quantity.
+For more information, please contact
+Special Sales Department
+Manning Publications Co.
+20 Baldwin Road
+PO Box 761
+Shelter Island, NY 11964
+Email: orders@manning.com
+© 2025 Manning Publications Co. All rights reserved.
+No part of this publication may be reproduced, stored in a retrieval system, or transmitted, in any form 
+or by means electronic, mechanical, photocopying, or otherwise, without prior written permission of the 
+publisher.
+Many of the designations used by manufacturers and sellers to distinguish their products are claimed 
+as trademarks. Where those designations appear in the book, and Manning Publications was aware of a 
+trademark claim, the designations have been printed in initial caps or all caps.
+Recognizing the importance of preserving what has been written, it is Manning’s policy to have the books 
+we publish printed on acid-­free paper, and we exert our best efforts to that end. Recognizing also our 
+responsibility to conserve the resources of our planet, Manning books are printed on paper that is at 
+least 15 percent recycled and processed without the use of elemental chlorine.
+∞
+	
+Manning Publications Co. 
+20 Baldwin Road
+PO Box 761 
+Shelter Island, NY 11964
+ISBN 9781633435858
+Printed in the United States of America
+The author and publisher have made every effort to ensure that the information in this book was correct 
+at press time. The author and publisher do not assume and hereby disclaim any liability to any party for 
+any loss, damage, or disruption caused by errors or omissions, whether such errors or omissions result 
+from negligence, accident, or any other cause, or from any usage of the information herein.
+	
+Development editor: 	 Ian Hough
+	
+Technical editor: 	 Arturo Geigel
+	
+Review editor: 	 Dunja NikitoviÊ
+	
+Production editor:	 Andy Marinkovich
+	
+Copy editor: 	 Lana Todorovic-Arndt
+	
+Proofreader: 	 Keri Hales
+	
+Typesetter: 	 Tamara ŠveliÊ SabljiÊ
+	
+Cover designer: 	 Marija TudorTo Pallavi and Zara—my greatest sources of love, strength, and inspirationiv
+brief contents
+Part 1		 Foundations..................................................................1
+	
+1	
+■ 	 LLMs and the need for RAG   3
+	
+2	
+■ 	 RAG systems and their design  17
+Part 2		 Creating RAG systems...............................................31
+	
+3	
+■ 	 Indexing pipeline: Creating a knowledge base for RAG  33
+	
+4	
+■ 	 Generation pipeline: Generating contextual LLM responses  58
+	
+5	
+■ 	 RAG evaluation: Accuracy, relevance, and faithfulness  87
+Part 3		 RAG in production...................................................119
+	
+6	
+■ 	 Progression of RAG systems: Naïve, advanced, and  
+modular RAG  121
+	
+7	
+■ 	 Evolving RAGOps stack  145
+Part 4		 Additional considerations.....................................165
+	
+8	
+■ 	 Graph, multimodal, agentic, and other RAG variants  167
+	
+9	
+■ 	 RAG development framework and further exploration  200v
+contents
+preface    ix
+acknowledgments    xi
+about this book    xiii
+about the author    xvii
+about the cover illustration    xviii
+Part 1	 Foundations...................................................1
+	
+1	
+LLMs and the need for RAG   3
+	 1.1	
+Curse of the LLMs and the idea of RAG  4
+LLMs are not trained for facts  6  ■  What is RAG?  8
+	 1.2	
+The novelty of RAG  11
+The RAG discovery  11  ■  How does RAG help?  12
+	 1.3	
+Popular RAG use cases  13
+Search Engine Experience  13  ■  Personalized marketing content 
+generation  13  ■  Real-time event commentary  14 
+Conversational agents  14  ■  Document question answering 
+systems  14  ■  Virtual assistants  15  ■  AI-powered research  15 
+Social media monitoring and sentiment analysis  15 
+News generation and content curation  15vi
+contents
+vi
+	
+2	
+RAG systems and their design  17
+	 2.1	
+What does a RAG system look like?  18
+	 2.2	
+Design of RAG systems  22
+	 2.3	
+Indexing pipeline  23
+	 2.4	
+Generation pipeline  25
+	 2.5	
+Evaluation and monitoring  26
+	 2.6	
+The RAGOps Stack  27
+	 2.7	
+Caching, guardrails, security, and other layers  28
+Part 2	 Creating RAG systems.................................31
+	
+3	
+Indexing pipeline: Creating a knowledge base for RAG  33
+	 3.1	
+Data loading  34
+	 3.2	
+Data splitting (chunking)  38
+Advantages of chunking  38  ■  Chunking process  39 
+Chunking methods  39  ■  Choosing a chunking strategy  44
+	 3.3	
+Data conversion (embeddings)  46
+What are embeddings?  46  ■  Common pretrained  
+embeddings models  48  ■  Embeddings use cases  49 
+How to choose embeddings?  52
+	 3.4	
+Storage (vector databases)  53
+What are vector databases?   53  ■  Types of vector databases  53 
+Choosing a vector database  55
+	
+4	
+Generation pipeline: Generating contextual LLM responses  58
+	 4.1	
+Generation pipeline overview  59
+	 4.2	
+Retrieval  59
+Progression of retrieval methods  61  ■  Popular retrievers  67 
+A simple retriever implementation  68
+	 4.3	
+Augmentation  69
+RAG prompt engineering techniques  70  ■  A simple augmentation 
+prompt creation  76
+	 4.4	
+Generation  77
+Categorization of LLMs and suitability for RAG  77 
+Completing the RAG pipeline: Generation using LLMs  82vii
+contents
+	
+vii
+	
+5	
+RAG evaluation: Accuracy, relevance, and faithfulness  87
+	 5.1	
+Key aspects of RAG evaluation  88
+Quality scores  89  ■  Required abilities  89
+	 5.2	
+Evaluation metrics  91
+Retrieval metrics  91  ■  RAG-specific metrics  98
+	 5.3	
+Frameworks  104
+RAGAs  104  ■  Automated RAG evaluation system  110
+	 5.4	
+Benchmarks  111
+RGB  111
+	 5.5	
+Limitations and best practices  115
+Part 3	 RAG in production.....................................119
+	
+6	
+Progression of RAG systems: Naïve, advanced, and  
+	
+	
+modular RAG  121
+	 6.1	
+Limitations of naïve RAG  122
+	 6.2	
+Advanced RAG techniques  123
+	 6.3	
+Pre-retrieval techniques  125
+Index optimization  125  ■  Query optimization  130
+	 6.4	
+Retrieval strategies  133
+Hybrid retrieval  133  ■  Iterative retrieval  134 
+Recursive retrieval  134  ■  Adaptive retrieval  134
+	 6.5	
+Post-retrieval techniques  136
+Compression  136
+	 6.6	
+Modular RAG  139
+Core modules  139  ■  New modules  140
+	
+7	
+Evolving RAGOps stack  145
+	 7.1	
+The evolving RAGOps stack  146
+Critical layers  147  ■  Essential layers  155 
+Enhancement layers  159
+	 7.2	
+Production best practices  161viii
+contents
+viii
+Part 4	 Additional considerations......................165
+	
+8	
+Graph, multimodal, agentic, and other RAG variants  167
+	 8.1	
+What are RAG variants, and why do we need them?  168
+	 8.2	
+Multimodal RAG  169
+Data modality  169  ■  Multimodal RAG use cases  170 
+Multimodal RAG pipelines  170  ■  Challenges and best 
+practices  176
+	 8.3	
+Knowledge graph RAG  177
+Knowledge graphs  177  ■  Knowledge graph RAG use cases  179 
+Graph RAG approaches  179  ■  Graph RAG pipelines  181 
+Challenges and best practices  186
+	 8.4	
+Agentic RAG  187
+LLM agents  187  ■  Agentic RAG capabilities  190  ■  Agentic 
+RAG pipelines  190  ■  Challenges and pest practices  193
+	 8.5	
+Other RAG variants  194
+Corrective RAG  194  ■  Speculative RAG  195  ■  Self-reflective 
+(self RAG)  196  ■  RAPTOR  197
+	
+9	
+RAG development framework and further exploration  200
+	 9.1	
+RAG development framework  201
+Initiation stage: Defining and scoping the RAG system  203
+	 9.2	
+Design stage: Layering the RAGOps stack  207
+Indexing pipeline design  207  ■  Generation pipeline design  211 
+Other design considerations  215  ■  Development stage: Building 
+modular RAG pipelines  215  ■  Evaluation stage: Validating and 
+optimizing the RAG system  218  ■  Deployment stage: Launching 
+and scaling the RAG system  220  ■  Maintenance stage: Ensuring 
+reliability and adaptability  222
+	 9.3	
+Ideas for further exploration  222
+Fine-tuning within RAG  222  ■  Long-context windows in 
+LLMs  224  ■  Managed solutions  224  ■  Difficult queries  225
+	
+	
+index  229
