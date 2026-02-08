@@ -1,8 +1,8 @@
 from ollama import embeddings
-
+from src.config import RAGSettings
 
 class EmbeddingManager:
-    def __init__(self, model_name : str = "qwen3-embedding:0.6b", ):
+    def __init__(self, model_name : str = RAGSettings.EMBEDDING_MODEL_NAME):
         
         self.model_name = model_name
         

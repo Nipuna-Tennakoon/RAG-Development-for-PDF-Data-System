@@ -5,12 +5,13 @@ from langchain_community.document_loaders import PyMuPDFLoader, PyPDFLoader
 from langchain_community.document_loaders import TextLoader, csv_loader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import DirectoryLoader
+from src.config import RAGSettings
 
 class RAGDataLoader:
     
-    def __init__(self, source_dir : str, chnuk_size : int = 250, chunk_overlap : int = 20):
+    def __init__(self, source_dir : str, chunk_size : int = RAGSettings.CHUNK_SIZE, chunk_overlap : int = RAGSettings.CHUNK_OVERLAP):
         self.source_dir = source_dir
-        self.chunk_size = chnuk_size
+        self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         
     def _pdf_loader(self):
