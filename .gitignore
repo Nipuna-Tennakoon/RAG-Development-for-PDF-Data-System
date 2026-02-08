@@ -1,2 +1,4 @@
 /ragenv
 /data/vector_store
+.env
+src/__pycache__
